@@ -1,0 +1,64 @@
+{
+  "name": "spotted-backend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/spotted-backend/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/spotted-backend",
+        "main": "apps/spotted-backend/src/main.ts",
+        "tsConfig": "apps/spotted-backend/tsconfig.app.json",
+        "assets": ["apps/spotted-backend/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/spotted-backend/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "spotted-backend:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "spotted-backend:build:development"
+        },
+        "production": {
+          "buildTarget": "spotted-backend:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/spotted-backend/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/spotted-backend/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,14 @@
+#panel2 > div > div:nth-child(1) > button,
+#dialogDescription > div > div > div:nth-child(4) > button,
+#panel2 > div > div.select.-to > button,
+#dialogDescription > div > div > div > button,
+#appMain > div > div.search-block.section > div > div.search > button,
+#__layout > div > div:nth-child(4) > div > div.popup-contents > div.footer > button.button.-positive,
+#appMain > div:nth-child(2) > div > div > section > div.people-block > form > div.operation-block > button
+
+
+
+#appMain > div:nth-child(2) > div > div > section > div.booking-calendar > div:nth-child(4) > table > tbody > tr:nth-child(1) > td:nth-child(2) > button > span > span
+
+
+https://www.zipair.net/en

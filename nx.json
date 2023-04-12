@@ -1,24 +1,73 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "npmScope": "web-tracker",
+  "npmScope": "spotted",
   "tasksRunnerOptions": {
     "default": {
       "runner": "nx/tasks-runners/default",
       "options": {
-        "cacheableOperations": [
-          "build",
-          "lint",
-          "test",
-          "e2e"
-        ]
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
       }
     }
   },
   "targetDefaults": {
     "build": {
-      "dependsOn": [
-        "^build"
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
+    },
+    "lint": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore"
       ]
+    }
+  },
+  "projects": {
+    "spotted-frontend": {
+      "root": "apps/spotted-frontend",
+      "sourceRoot": "apps/spotted-frontend/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "nx-vite:build",
+          "options": {
+            "root": "apps/spotted-frontend",
+            "outputPath": "dist/apps/spotted-frontend"
+          }
+        },
+        "serve": {
+          "executor": "nx-vite:serve",
+          "options": {
+            "root": "apps/spotted-frontend"
+          }
+        }
+      }
+    },
+    "spotted-backend": {
+      "root": "apps/spotted-backend",
+      "sourceRoot": "apps/spotted-backend/src",
+      "projectType": "application",
+      "targets": {
+        "serve": {
+          "executor": "@nrwl/express:serve",
+          "options": {
+            "buildTarget": "spotted-backend:build",
+            "host": "localhost",
+            "port": 5000
+          }
+        },
+        "build": {
+          "executor": "@nrwl/express:build",
+          "options": {
+            "outputPath": "dist/apps/spotted-backend",
+            "main": "apps/spotted-backend/src/app.js",
+            "tsConfig": "apps/spotted-backend/tsconfig.app.json",
+            "assets": ["apps/spotted-backend/src/assets"]
+          }
+        }
+      }
     }
   }
 }
