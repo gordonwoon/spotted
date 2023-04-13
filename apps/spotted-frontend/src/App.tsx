@@ -26,6 +26,12 @@ function getCssPath(el: any) {
   return path.join(' > ');
 }
 
+interface IUserActions {
+  selector: string;
+  textContent: string;
+  route: string;
+}
+
 export default function App() {
   const [trackingId, setTrackingId] = createSignal('https://www.zipair.net/en');
   const [delay, setDelay] = createSignal(0);
@@ -37,8 +43,9 @@ export default function App() {
   // );
   // const [previewContent, setPreviewContent] = createSignal('');
 
-  const [cssSelector, setCssSelector] = createSignal('');
-  const [clickSelectors, setClickSelectors] = createSignal<string[]>([]);
+  const [trackedAction, setTrackAction] = createSignal<IUserActions>();
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  const [userActions, setUserActions] = createSignal<IUserActions[]>([]);
   const [previewContent, setPreviewContent] = createSignal('');
 
   async function handleSubmit() {
@@ -47,8 +54,8 @@ export default function App() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         url: url(),
-        css_selector: cssSelector(),
-        clickSelectors: clickSelectors(),
+        css_selector: trackedAction()?.selector,
+        user_actions: userActions(),
         delay: delay(),
       }),
     });
@@ -78,19 +85,21 @@ export default function App() {
   async function getSelectors() {
     const response = await fetch('http://localhost:5000/api/get-selectors');
     const data = await response.json();
-    setClickSelectors(data);
+    setUserActions(data);
   }
 
   onMount(() => {
     window.addEventListener('message', (event) => {
       if (event.source !== window) return;
 
-      if (event.data.action === 'send-selector') {
-        console.log('receiving selector', event.data.selector);
-        setClickSelectors((prevSelectors) => [
-          ...prevSelectors,
-          event.data.selector,
-        ]);
+      if (event.data.action === 'send-action') {
+        console.log('receiving selector', event.data.userActions);
+        setUserActions(event.data.userActions);
+      }
+
+      if (event.data.action === 'stop-tracking') {
+        console.log('receiving tracked index', event.data.trackedIndex);
+        setTrackAction(userActions()[event.data.trackedIndex]);
       }
     });
   });
@@ -116,36 +125,12 @@ export default function App() {
         <button onClick={startTracking}>Start Tracking</button>
         <button onClick={getSelectors}>Get Selectors</button>
 
-        <ul>
-          {clickSelectors().map((selector, index) => (
-            <li key={index}>{selector}</li>
-          ))}
-        </ul>
-        {/* <label htmlFor="cssSelector">CSS Selector:</label>
-        <input
-          type="text"
-          id="cssSelector"
-          value={cssSelector()}
-          onInput={(e) => setCssSelector(e.currentTarget.value)}
-        /> */}
-        {/* <br /> */}
-        {/* <label htmlFor="clickSelectors">
-          Click Selectors (comma-separated):
-        </label>
-        <textarea
-          id="clickSelectors"
-          value={clickSelectors()}
-          onInput={(e) => setClickSelectors(e.currentTarget.value)}
-        />
-        <br />
-        <label htmlFor="delay">CSS Selector:</label>
-        <input
-          type="number"
-          id="delay"
-          value={delay()}
-          onInput={(e) => setDelay(e.currentTarget.value)}
-        />
-        <br /> */}
+        <p>
+          Tracked Selector Content: <span>{trackedAction()?.textContent}</span>
+        </p>
+        <p>
+          Tracked Selector: <span>{trackedAction()?.selector}</span>
+        </p>
         <button type="submit">Preview</button>
       </form>
       <div>
