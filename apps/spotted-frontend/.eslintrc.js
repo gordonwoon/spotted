@@ -5,7 +5,7 @@ module.exports = {
   ignorePatterns: ['!**/*'],
   overrides: [
     {
-      files: ['*.ts', '*.js', '*.tsx'],
+      files: ['*.ts', '*.tsx'],
       parserOptions: {
         project: ['apps/spotted-frontend/tsconfig.*?.json'],
       },

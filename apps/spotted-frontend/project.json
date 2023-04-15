@@ -10,6 +10,7 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/spotted-frontend",
+        "postcssConfig": "apps/spotted-frontend/postcss.config.js",
         "frameworkConfigFile": "@nxext/solid/plugins/vite"
       },
       "configurations": {
