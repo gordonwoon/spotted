@@ -67,29 +67,36 @@ async function performTracking(
     for (const action of user_actions) {
       console.log(action);
 
-      // Wait for the element to appear in the DOM
-      await page.waitForSelector(action.selector);
+      if (action.type === 'scroll') {
+        await page.evaluate((scrollY) => {
+          window.scrollTo({ top: scrollY, behavior: 'smooth' });
+        }, action.scrollY);
+        await new Promise((resolve) => setTimeout(resolve, 250));
+      } else if (action.type === 'click') {
+        // Wait for the element to appear in the DOM
+        await page.waitForSelector(action.selector);
 
-      // Wait for the element to be visible
-      await page.waitForFunction(
-        (selector) => {
-          const el = document.querySelector(selector);
-          return el && getComputedStyle(el).display !== 'none';
-        },
-        {},
-        action.selector
-      );
+        // Wait for the element to be visible
+        await page.waitForFunction(
+          (selector) => {
+            const el = document.querySelector(selector);
+            return el && getComputedStyle(el).display !== 'none';
+          },
+          {},
+          action.selector
+        );
 
-      // If the URL has changed, wait for navigation to complete
-      if (action?.route) {
-        const navigationPromise = page.waitForNavigation({
-          waitUntil: 'networkidle0',
-        });
+        // If the URL has changed, wait for navigation to complete
+        if (action?.route) {
+          const navigationPromise = page.waitForNavigation({
+            waitUntil: 'networkidle0',
+          });
 
-        await page.click(action.selector);
-        await navigationPromise;
-      } else {
-        await page.click(action.selector);
+          await page.click(action.selector);
+          await navigationPromise;
+        } else {
+          await page.click(action.selector);
+        }
       }
 
       await new Promise((resolve) => setTimeout(resolve, delay));

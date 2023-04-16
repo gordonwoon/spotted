@@ -3,7 +3,9 @@ export function model(): string {
 }
 
 export interface UserAction {
+  type: string;
   selector: string;
   textContent?: string;
   route?: string;
+  scrollY?: number;
 }
