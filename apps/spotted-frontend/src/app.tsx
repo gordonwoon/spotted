@@ -9,9 +9,7 @@ function App(): JSX.Element {
     <>
       <NavBar routes={routes} />
       <div class="container mx-auto px-4 md:px-6 lg:px-8 mt-10">
-        <div class="bg-white rounded-lg shadow-lg p-8">
-          <Routes />
-        </div>
+        <Routes />
       </div>
     </>
   );

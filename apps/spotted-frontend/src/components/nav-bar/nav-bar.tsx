@@ -26,12 +26,6 @@ function NavBar({ routes }: NavBarProps): JSX.Element {
                   {route.label}
                 </Link>
               ))}
-              <a
-                href="#"
-                class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Pricing
-              </a>
             </div>
           </div>
           <div class="-mr-2 flex md:hidden">
@@ -49,9 +43,9 @@ function NavBar({ routes }: NavBarProps): JSX.Element {
                 aria-hidden="true"
               >
                 <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
                   d="M4 6h16M4 12h16M4 18h16"
                 />
               </svg>
@@ -62,18 +56,14 @@ function NavBar({ routes }: NavBarProps): JSX.Element {
 
       <div class={`${isOpen() ? 'block' : 'hidden'} md:hidden`}>
         <div class="px-2 pt-2 pb-3 space-y-1">
-          <a
-            href="#"
-            class="text-gray-700 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
-          >
-            Features
-          </a>
-          <a
-            href="#"
-            class="text-gray-700 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
-          >
-            Pricing
-          </a>
+          {routes?.map((route) => (
+            <Link
+              href={route.path}
+              class="text-gray-700 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
+            >
+              {route.label}
+            </Link>
+          ))}
         </div>
       </div>
     </nav>
