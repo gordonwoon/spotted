@@ -1,16 +1,30 @@
 // auth.js
 import express from 'express';
+import crypto from 'crypto';
 const router = express.Router();
 import AWS from '../helper/config';
 
 const cognito = new AWS.CognitoIdentityServiceProvider();
+
+function calculateSecretHash(userPoolClientId, userPoolClientSecret, userName) {
+  const message = userName + userPoolClientId;
+  return crypto
+    .createHmac('SHA256', userPoolClientSecret)
+    .update(message)
+    .digest('base64');
+}
 
 // Signup route
 router.post('/signup', async (req, res) => {
   const { email, password } = req.body;
 
   const params = {
-    ClientId: 'your-user-pool-client-id',
+    ClientId: '1mnrbj3n1h3ls2lno5cdq4t2m',
+    SecretHash: calculateSecretHash(
+      '1mnrbj3n1h3ls2lno5cdq4t2m',
+      '1gqksukc6fg0vmm4gc6qpp5lhg2fsbmh4ucdh70gqoc82s4efihp',
+      email
+    ),
     Username: email,
     Password: password,
     UserAttributes: [
@@ -36,10 +50,15 @@ router.post('/login', async (req, res) => {
 
   const params = {
     AuthFlow: 'USER_PASSWORD_AUTH',
-    ClientId: 'your-user-pool-client-id',
+    ClientId: '1mnrbj3n1h3ls2lno5cdq4t2m',
     AuthParameters: {
       USERNAME: email,
       PASSWORD: password,
+      SECRET_HASH: calculateSecretHash(
+        '1mnrbj3n1h3ls2lno5cdq4t2m',
+        '1gqksukc6fg0vmm4gc6qpp5lhg2fsbmh4ucdh70gqoc82s4efihp',
+        email
+      ),
     },
   };
 
